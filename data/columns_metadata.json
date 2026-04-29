@@ -1,0 +1,852 @@
+[
+  {
+  "logical_column": "# Customer Deposit",
+  "logical_table": "DEPOSIT",
+  "description": "đếm số lượng khách hàng trong bảng deposit",
+  "business_terms": ["số lượng khách hàng deposit"],
+  "expression": "count(distinct DW_DEPOSIT_FCT.CUSTOMER_CDE)",
+  "data_type": "int",
+  "role": "attribute",  
+  "aggregation": false,
+  "physical_mapping": [
+    {
+      "physical_table": "DW_DEPOSIT_FCT",
+      "physical_column": "CUSTOMER_CDE"
+    }
+  ]
+  },
+  {
+  "logical_column": "ACCR_AMT",
+  "logical_table": "DEPOSIT",
+  "description": "lãi dự thu",
+  "business_terms": ["lãi dự thu"],
+  "expression": "sum(DW_DEPOSIT_FCT.ACCR_AMT)",
+  "data_type": "double",
+  "role": "measure",  
+  "aggregation": "sum",
+  "physical_mapping": [
+    {
+      "physical_table": "DW_DEPOSIT_FCT",
+      "physical_column": "ACCR_AMT"
+    }
+  ]
+  },
+  {
+  "logical_column": "ACCR_AMT_NONAGG",
+  "logical_table": "DEPOSIT",
+  "description": "lãi dự thu theo từng dòng, không aggregate",
+  "business_terms": ["lãi dự thu"],
+  "expression": "DW_DEPOSIT_FCT.ACCR_AMT",
+  "data_type": "double",
+  "role": "measure",  
+  "aggregation": "None",
+  "physical_mapping": [
+    {
+      "physical_table": "DW_DEPOSIT_FCT",
+      "physical_column": "ACCR_AMT"
+    }
+  ]
+  },
+  {
+  "logical_column": "ACCR_DR_AMT",
+  "logical_table": "DEPOSIT",
+  "description": "",
+  "business_terms": [],
+  "expression": "sum(DW_DEPOSIT_FCT.ACCR_DR_AMT)",
+  "data_type": "double",
+  "role": "measure",  
+  "aggregation": "Sum",
+  "physical_mapping": [
+    {
+      "physical_table": "DW_DEPOSIT_FCT",
+      "physical_column": "ACCR_DR_AMT"
+    }
+  ]
+  },
+  {
+  "logical_column": "ACCR_DR_AMT_NONAGG",
+  "logical_table": "DEPOSIT",
+  "description": "",
+  "business_terms": [],
+  "expression": "DW_DEPOSIT_FCT.ACCR_DR_AMT",
+  "data_type": "double",
+  "role": "measure",  
+  "aggregation": "None",
+  "physical_mapping": [
+    {
+      "physical_table": "DW_DEPOSIT_FCT",
+      "physical_column": "ACCR_DR_AMT"
+    }
+  ]
+  },
+  {
+  "logical_column": "ACCR_CR2_DR2",
+  "logical_table": "DEPOSIT",
+  "description": "",
+  "business_terms": [],
+  "expression": "sum(DW_DEPOSIT_FCT.ACCR_CR2_DR2)",
+  "data_type": "double",
+  "role": "measure",  
+  "aggregation": "Sum",
+  "physical_mapping": [
+    {
+      "physical_table": "DW_DEPOSIT_FCT",
+      "physical_column": "ACCR_CR2_DR2"
+    }
+  ]
+  },
+  {
+  "logical_column": "ACCR_CR2_DR2",
+  "logical_table": "DEPOSIT",
+  "description": "",
+  "business_terms": [],
+  "expression": "DW_DEPOSIT_FCT.ACCR_CR2_DR2",
+  "data_type": "double",
+  "role": "measure",  
+  "aggregation": "None",
+  "physical_mapping": [
+    {
+      "physical_table": "DW_DEPOSIT_FCT",
+      "physical_column": "ACCR_CR2_DR2"
+    }
+  ]
+  },
+  {
+    "logical_column": "ACCT_ID",
+    "logical_table": "DEPOSIT",
+    "description": "Mã định danh tài khoản tiền gửi (account id).",
+    "business_terms": ["mã tài khoản", "account id", "acct id"],
+    "expression": "DW_DEPOSIT_FCT.ACCT_ID",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "ACCT_ID"
+      }
+    ]
+  },
+  {
+    "logical_column": "ACCT_JOINT_HOLDER",
+    "logical_table": "DEPOSIT",
+    "description": "Chủ tài khoản phụ tiền gửi, tài khoản thanh toán trong deposit ",
+    "business_terms": ["chủ tài khoản phụ"],
+    "expression": "DW_DEPOSIT_FCT.ACCT_JOINT_HOLDER",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "ACCT_JOINT_HOLDER"
+      }
+    ]
+  },
+  {
+    "logical_column": "ACCT_SHORT_NAME",
+    "logical_table": "DEPOSIT",
+    "description": "Tên chủ tài khoản",
+    "business_terms": ["tên chủ tài khoản", "tên khách hàng"],
+    "expression": "DW_DEPOSIT_FCT.ACCT_SHORT_NAME",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "ACCT_SHORT_NAME"
+      }
+    ]
+  },
+  {
+    "logical_column": "ACCT_TITLE",
+    "logical_table": "DEPOSIT",
+    "description": "Tên chủ tài khoản theo field Title T24",
+    "business_terms": ["tên chủ tài khoản", "tên khách hàng"],
+    "expression": "DW_DEPOSIT_FCT.ACCT_TITLE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "ACCT_TITLE"
+      }
+    ]
+  },
+  {
+    "logical_column": "ACCT_TITLE_2",
+    "logical_table": "DEPOSIT",
+    "description": "Tên chủ tài khoản theo field Title 2 T24",
+    "business_terms": ["tên chủ tài khoản", "tên khách hàng"],
+    "expression": "DW_DEPOSIT_FCT.ACCT_TITLE_2",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "ACCT_TITLE_2"
+      }
+    ]
+  },
+  {
+    "logical_column": "ACTUAL_BAL",
+    "logical_table": "DEPOSIT",
+    "description": "Số dư tài khoản thanh toán hoặc tiền gửi nguyên tệ",
+    "business_terms": ["số dư tài khoản nguyên tệ"],
+    "expression": "SUM(DWA_DEPOSIT_FCT.ACTUAL_BAL)",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "SUM",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "ACTUAL_BAL"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "ACTUAL_BAL"
+      }
+    ]
+  },
+  {
+    "logical_column": "ACTUAL_BAL_LCL",
+    "logical_table": "DEPOSIT",
+    "description": "Số dư tài khoản thanh toán hoặc tiền gửi quy đổi VNĐ",
+    "business_terms": ["số dư tài khoản quy đổi"],
+    "expression": "SUM(DWA_DEPOSIT_FCT.ACTUAL_BAL_LCL)",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "SUM",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "ACTUAL_BAL_LCL"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "ACTUAL_BAL_LCL"
+      }
+    ]
+  },
+  {
+    "logical_column": "ACTUAL_BAL_NONAGG",
+    "logical_table": "DEPOSIT",
+    "description": "Số dư tài khoản thanh toán hoặc tiền nguyên tệ không aggregation, theo từng dòng",
+    "business_terms": ["số dư tài khoản nguyên tệ"],
+    "expression": "DW_DEPOSIT_FCT.ACTUAL_BAL",
+    "data_type": "DOUBLE",
+    "role": "measure",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "ACTUAL_BAL"
+      }
+    ]
+  },
+  {
+    "logical_column": "ACTUAL_BAL_LCL_NONAGG",
+    "logical_table": "DEPOSIT",
+    "description": "Số dư tài khoản thanh toán hoặc tiền quy đổi không aggregation, theo từng dòng",
+    "business_terms": ["số dư tài khoản quy đổi"],
+    "expression": "DW_DEPOSIT_FCT.ACTUAL_BAL_LCL",
+    "data_type": "DOUBLE",
+    "role": "measure",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "ACTUAL_BAL_LCL"
+      }
+    ]
+  },
+  {
+    "logical_column": "APP",
+    "logical_table": "DEPOSIT",
+    "description": "phân hệ T24",
+    "business_terms": [],
+    "expression": "DWA_DEPOSIT_FCT.APP",
+    "data_type": "VARCHAR",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "APP"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "APP"
+      }
+    ]
+  },
+  {
+    "logical_column": "AVG_AMT",
+    "logical_table": "DEPOSIT",
+    "description": "Số dư bình quân tính từ đầu tháng đến ngày PROCESS_DT của tài khoản thanh toán hoặc tiền gửi theo nguyên tệ",
+    "business_terms": ["số dư tài khoản nguyên tệ"],
+    "expression": "SUM(DWA_DEPOSIT_FCT.AVG_AMT)",
+    "data_type": "DOUBLE",
+    "role": "measure",
+    "aggregation": "SUM",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "AVG_AMT"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "AVG_AMT"
+      }
+    ]
+  },
+  {
+    "logical_column": "AVG_AMT_LCL",
+    "logical_table": "DEPOSIT",
+    "description": "Số dư bình quân tính từ đầu tháng đến ngày PROCESS_DT của tài khoản thanh toán hoặc tiền gửi theo quy đổi VNĐ",
+    "expression": "SUM(DWA_DEPOSIT_FCT.AVG_AMT_LCL)",
+    "data_type": "DOUBLE",
+    "role": "measure",
+    "aggregation": "SUM",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "AVG_AMT_LCL"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "AVG_AMT_LCL"
+      }
+    ]
+  },
+  {
+  "logical_column": "CATEGORY_CDE",
+  "logical_table": "DEPOSIT",
+  "description": "Mã loại hợp đồng tiền gửi (CASA, tiền gửi có kỳ hạn, tiền gửi doanh nghiệp...).",
+  "business_terms": ["mã công ty"],
+  "expression": "DWA_DEPOSIT_FCT.COMPANY_CDE)",
+  "data_type": "int",
+  "role": "attribute",  
+  "aggregation": "None",
+  "physical_mapping": [
+    {
+      "physical_table": "DW_DEPOSIT_FCT",
+      "physical_column": "COMPANY_CDE"
+    },
+    {
+      "physical_table": "DWA_DEPOSIT_FCT",
+      "physical_column": "COMPANY_CDE"
+    }
+  ]
+},
+{
+  "logical_column": "COMPANY_CDE",
+  "logical_table": "DEPOSIT",
+  "description": "Mã công ty, company_cde='VNI' là Việt Nam, company_cde='CAM' là Campuchia, company_cde='LAO' là Lào.",
+  "business_terms": ["mã công ty"],
+  "expression": "DWA_DEPOSIT_FCT.COMPANY_CDE)",
+  "data_type": "int",
+  "role": "attribute",  
+  "aggregation": false,
+  "physical_mapping": [
+    {
+      "physical_table": "DW_DEPOSIT_FCT",
+      "physical_column": "COMPANY_CDE"
+    },
+    {
+      "physical_table": "DWA_DEPOSIT_FCT",
+      "physical_column": "COMPANY_CDE"
+    }
+  ]
+},
+  {
+  "logical_column": "COMPANY_KEY",
+  "logical_table": "DEPOSIT",
+  "description": "Mã công ty, company_key=1 là Việt Nam, company_key=2 là Campuchia, company_key=3 là Lào.",
+  "business_terms": ["mã công ty"],
+  "expression": "DWA_DEPOSIT_FCT.COMPANY_KEY)",
+  "data_type": "int",
+  "role": "attribute",  
+  "aggregation": false,
+  "physical_mapping": [
+    {
+      "physical_table": "DW_DEPOSIT_FCT",
+      "physical_column": "COMPANY_KEY"
+    },
+    {
+      "physical_table": "DWA__DEPOSIT_FCT",
+      "physical_column": "COMPANY_KEY"
+    }
+  ]
+},
+  {
+    "logical_column": "CURRENCY_CDE",
+    "logical_table": "DEPOSIT",
+    "description": "Mã loại tiền tệ của tài khoản (VD: VND, USD).",
+    "business_terms": ["loại tiền", "currency", "tiền tệ"],
+    "expression": "DWA_DEPOSIT_FCT.CURRENCY_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "CURRENCY_CDE"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "CURRENCY_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "CUS_TARGET_CDE",
+    "logical_table": "DEPOSIT",
+    "description": "Mã phân khúc khách hàng",
+    "business_terms": ["phân khúc khách hàng"],
+    "expression": "DW_DEPOSIT_FCT.CUS_TARGET_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "CUS_TARGET_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "CUSTOMER_CDE",
+    "logical_table": "DEPOSIT",
+    "description": "Mã khách hàng duy nhất trong hệ thống.",
+    "business_terms": ["mã khách hàng", "customer id", "khách hàng"],
+    "expression": "DWA_DEPOSIT_FCT.CUSTOMER_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "CUSTOMER_CDE"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "CUSTOMER_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "CUSTOMER_KEY",
+    "logical_table": "DEPOSIT",
+    "description": "Key khách hàng duy nhất trong data warehouse",
+    "business_terms": ["mã khách hàng", "customer id", "khách hàng"],
+    "expression": "DWA_DEPOSIT_FCT.CUSTOMER_KEY",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "CUSTOMER_KEY"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_  column": "CUSTOMER_KEY"
+      }
+    ]
+  },
+  {
+    "logical_column": "DAO_CDE",
+    "logical_table": "DEPOSIT",
+    "description": "Mã nhân viên quản lý tài khoản khách hàng",
+    "business_terms": ["mã AO khách hàng", "DAO_CDE", "mã nhân viên phụ trách"],
+    "expression": "DWA_DEPOSIT_FCT.DAO_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "DAO_CDE"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "DAO_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "DAO_KEY",
+    "logical_table": "DEPOSIT",
+    "description": "Key nhân viên quản lý khách hàng duy nhất trong data warehouse",
+    "business_terms": [],
+    "expression": "DWA_DEPOSIT_FCT.DAO_KEY",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "DAO_KEY"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "DAO_KEY"
+      }
+    ]
+  },
+  {
+    "logical_column": "FREQUENCY",
+    "logical_table": "DEPOSIT",
+    "description": "",
+    "business_terms": [],
+    "expression": "DW_DEPOSIT_FCT.FREQUENCY",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "FREQUENCY"
+      }
+    ]
+  },
+  {
+    "logical_column": "INTEREST_AMT",
+    "logical_table": "DEPOSIT",
+    "description": "tổng tiền lãi nhận được từ tài khoản",
+    "business_terms": ["tiền lãi", "lãi tiền gửi"],
+    "expression": "SUM(DW_DEPOSIT_FCT.INTEREST_AMT)",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "Sum",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "INTEREST_AMT"
+      }
+    ]
+  },
+  {
+    "logical_column": "LEAD",
+    "logical_table": "DEPOSIT",
+    "description": "Mã chi nhánh phân theo LEAD",
+    "business_terms": [],
+    "expression": "DW_DEPOSIT_FCT.LEAD",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "Sum",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "LEAD"
+      }
+    ]
+  },
+  {
+    "logical_column": "LOCAL_REF",
+    "logical_table": "DEPOSIT",
+    "description": "field local_ref của T24 lưu thông tin phân cách bằng dấu '|'. Mỗi vị trí là thông tin khác nhau",
+    "business_terms": ["LOCAL_REF"],
+    "expression": "DW_DEPOSIT_FCT.LOCAL_REF",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "LOCAL_REF"
+      }
+    ]
+  },
+  {
+    "logical_column": "OPEN_DT",
+    "logical_table": "DEPOSIT",
+    "description": "Ngày bắt đầu của tài khoản",
+    "business_terms": ["ngày bắt đầu", "open_dt"],
+    "expression": "DW_DEPOSIT_FCT.OPEN_DT",
+    "data_type": "date",
+    "role": "date",
+    "aggregation": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "OPEN_DT"
+      }
+    ]
+  },
+  {
+    "logical_column": "VALUE_DT",
+    "logical_table": "DEPOSIT",
+    "description": "Ngày hiệu lực của khoản tiền gửi.",
+    "business_terms": ["ngày hiệu lực", "value date", "start date"],
+    "expression": "DW_DEPOSIT_FCT.VALUE_DT",
+    "data_type": "date",
+    "role": "date",
+    "aggregation": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "VALUE_DT"
+      }
+    ]
+  },
+  {
+    "logical_column": "MATURITY_DT",
+    "logical_table": "DEPOSIT",
+    "description": "Ngày đáo hạn / kết thúc của khoản tiền gửi.",
+    "business_terms": ["ngày đáo hạn", "due date", "end date"],
+    "expression": "DW_DEPOSIT_FCT.MATURITY_DT",
+    "data_type": "date",
+    "role": "date",
+    "aggregation": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "MATURITY_DT"
+      }
+    ]
+  },
+  {
+    "logical_column": "ROLLOVER_DT",
+    "logical_table": "DEPOSIT",
+    "description": "Ngày tái tục lại hợp đồng tiền gửi.",
+    "business_terms": ["ngày tái tục", "rollover date"],
+    "expression": "DW_DEPOSIT_FCT.ROLLOVER_DT",
+    "data_type": "date",
+    "role": "date",
+    "aggregation": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "ROLLOVER_DT"
+      }
+    ]
+  },
+  {
+    "logical_column": "PROCESS_DT",
+    "logical_table": "DEPOSIT",
+    "description": "Ngày dữ liệu được xử lý và nạp vào data warehouse.",
+    "business_terms": ["ngày xử lý", "process date", "ngày báo cáo"],
+    "expression": "DWA_DEPOSIT_FCT.PROCESS_DT",
+    "data_type": "date",
+    "role": "date",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "PROCESS_DT"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "PROCESS_DT"
+      }
+    ]
+  },
+  {
+    "logical_column": "PRODUCT_CDE",
+    "logical_table": "DEPOSIT",
+    "description": "Mã sản phẩm tiền gửi",
+    "business_terms": ["sản phẩm tiền gửi"],
+    "expression": "DWA_DEPOSIT_FCT.PRODUCT_CDE",
+    "data_type": "date",
+    "role": "date",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "PRODUCT_CDE"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "PRODUCT_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "SUB_BRANCH_CDE",
+    "logical_table": "DEPOSIT",
+    "description": "Mã phòng giao dịch mở tài khoản",
+    "business_terms": ["phòng giao dịch"],
+    "expression": "DWA_DEPOSIT_FCT.SUB_BRANCH_CDE",
+    "data_type": "date",
+    "role": "date",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "SUB_BRANCH_CDE"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "SUB_BRANCH_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "COMPANY_CDE",
+    "logical_table": "CUSTOMER",
+    "description": "Mã công ty khách hàng thuộc về, company_cde=1 là Việt Nam, company_cde=2 là Campuchia, company_cde=3 là Lào.",
+    "business_terms": ["mã công ty", "company code"],
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "COMPANY_CDE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "COMPANY_CDE  "
+      }
+    ]
+  },
+  {
+    "logical_column": "CUSTOMER_CDE",
+    "logical_table": "CUSTOMER",
+    "description": "Mã khách hàng duy nhất trong hệ thống.",
+    "business_terms": ["mã khách hàng", "customer id", "customer code"],
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "CUSTOMER_CDE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "CUSTOMER_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "DAO_CDE",
+    "logical_table": "CUSTOMER",
+    "description": "Mã nhân viên quản lý khách hàng (Relationship Manager).",
+    "business_terms": ["rm", "nhân viên quản lý", "relationship manager"],
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "DAO_CDE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "DAO_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "ADDRESS",
+    "logical_table": "CUSTOMER",
+    "description": "Địa chỉ liên hệ của khách hàng.",
+    "business_terms": ["địa chỉ", "address"],
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "ADDRESS"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "ADDRESS"
+      }
+    ]
+  },
+  {
+    "logical_column": "PHONE",
+    "logical_table": "CUSTOMER",
+    "description": "Số điện thoại liên hệ của khách hàng.",
+    "business_terms": ["số điện thoại", "phone", "mobile"],
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "PHONE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "PHONE"
+      }
+    ]
+  },
+  {
+    "logical_column": "EMAIL",
+    "logical_table": "CUSTOMER",
+    "description": "Địa chỉ email của khách hàng.",
+    "business_terms": ["email", "mail"],
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "EMAIL"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "EMAIL"
+      }
+    ]
+  },
+  {
+    "logical_column": "ACTIVE",
+    "logical_table": "CUSTOMER",
+    "description": "Trạng thái hoạt động của khách hàng (1: đang hoạt động, 0: không hoạt động).",
+    "business_terms": ["trạng thái", "active", "status"],
+    "data_type": "int",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "ACTIVE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "ACTIVE"
+      }
+    ]
+  },
+  {
+    "logical_column": "PROCESS_DT",
+    "logical_table": "CUSTOMER",
+    "description": "Ngày dữ liệu được xử lý và nạp vào data warehouse.",
+    "business_terms": ["ngày xử lý", "process date", "ngày snapshot"],
+    "data_type": "date",
+    "role": "date",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "PROCESS_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "PROCESS_DT"
+      }
+    ]
+  }
+]
+
+
