@@ -30,4 +30,7 @@ def run_test(question: str):
     print(result.get("answer"))
 
 if __name__ == "__main__":
-    run_test("tôi muốn biết cột customer code là gì")
+    run_test("số dư tài khoản khách hàng được lưu ở đâu")
+
+
+    

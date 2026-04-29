@@ -20,9 +20,9 @@
       "filter_condition": ""
     },
     {
-      "phys_table": "DWD_CLOSED_DEPOSIT_FCT",
+      "phys_table": "DWA_DEPOSIT_FCT",
       "priority": 1,
-      "priority_logic": "tiền gửi hoặc tài khoản thanh toán đã đóng, không còn hoạt động",
+      "priority_logic": "tiền gửi hoặc tài khoản thanh toán nhưng được aggregate để nhẹ hơn (bỏ đi customer_cde)",
       "filter_condition": ""
     }
   ]

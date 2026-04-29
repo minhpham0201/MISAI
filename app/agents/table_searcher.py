@@ -14,8 +14,11 @@ def table_searcher(state: dict):
     tables = []
     metadata = []
 
-    for r in results:
+    for idx, r in enumerate(results, start=1):
         table_name = r.metadata.get("logical_table")
+
+        score = getattr(r, "score", None)
+        print(f"  rank={idx} | table={table_name} | confidence={score}")
 
         if not table_name:
             continue

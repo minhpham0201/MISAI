@@ -6,6 +6,8 @@ def table_search_node(state):
     if not state.get("tables"):
         print("⚠️ No tables found (no retry mode)")
 
+    print("🔍 Found tables:", state.get("tables"))
+    
     state["step"] += 1
     state["next"] = "supervisor"
     return state

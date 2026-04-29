@@ -194,7 +194,7 @@
   {
     "logical_column": "ACTUAL_BAL",
     "logical_table": "DEPOSIT",
-    "description": "Số dư tài khoản thanh toán hoặc tiền gửi nguyên tệ",
+    "description": "Số dư tài khoản thanh toán hoặc tiền gửi nguyên tệ của khách hàng",
     "business_terms": ["số dư tài khoản nguyên tệ"],
     "expression": "SUM(DWA_DEPOSIT_FCT.ACTUAL_BAL)",
     "data_type": "string",

@@ -4,7 +4,8 @@ from app.core.llm import get_llm
 # =========================
 # LLM
 # =========================
-llm = get_llm(json_mode=True)
+llm_json = get_llm(json_mode=True)
+llm_text = get_llm(json_mode=False)
 
 # =========================
 # CONFIG
@@ -70,7 +71,7 @@ def safe_parse_json(text: str):
 # MAIN: PLAN
 # =========================
 def call_llm_plan(question: str):
-    res = llm.invoke([
+    res = llm_json.invoke([
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": question}
     ])
@@ -105,7 +106,7 @@ def call_llm_plan(question: str):
 # OPTIONAL: REWRITE (future retry)
 # =========================
 def rewrite_query(question: str):
-    res = llm.invoke([
+    res = llm_text.invoke([
         {"role": "system", "content": REWRITE_PROMPT},
         {"role": "user", "content": question}
     ])
@@ -141,7 +142,7 @@ def generate_answer(question, tables, columns):
         Columns:
         {columns}
         """
-    res = llm.invoke([
+    res = llm_text.invoke([
         {"role": "system", "content": ANSWER_PROMPT},
         {"role": "user", "content": content}
     ])

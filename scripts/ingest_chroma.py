@@ -21,7 +21,7 @@ def load_json(path):
         return json.load(f)
 
 # DROP CURRENT CHROMA DB
-def reset_chroma_db():
+def drop_chroma_db():
     if os.path.exists(CHROMA_PATH):
         shutil.rmtree(CHROMA_PATH)
         print("Drop Chroma DB")
@@ -58,11 +58,10 @@ def build_column_docs(data):
 
     for item in data:
         text = f"""
-        Column: {item.get("column_name")}
-        Table: {item.get("table")}
+        Column: {item.get("logical_column")}
+        Table: {item.get("logical_table")}
         Description: {item.get("description")}
         Business Terms: {", ".join(item.get("business_terms", []))}
-        Role: {item.get("role")}
         """
 
         docs.append(
@@ -80,7 +79,7 @@ def build_column_docs(data):
 # CREATE CHROMA DB
 def create_chroma_index():
     # DROP existing collections
-    reset_chroma_db()
+    drop_chroma_db()
 
     print("🚀 Loading JSON...")
     table_data = load_json(TABLE_JSON)
@@ -117,6 +116,10 @@ def create_chroma_index():
         storage_context=column_ctx,
     )
 
+    table_count = table_collection.count()
+    column_count = column_collection.count()
+    print(f"Ingested in table_metadata: {table_count}")
+    print(f"Ingested in column_metadata: {column_count}")
     print("DONE! Chroma DB created at:", CHROMA_PATH)
 
 
