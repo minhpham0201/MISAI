@@ -53,5 +53,28 @@
       "filter_condition": "ACTIVE = 1"
     }
 ]
+},
+{
+  "logical_name": "EWALL USER",
+  "business_terms": ["khách hàng dùng PAY", "người dùng PAY", "customer PAY", "ewallet user"],
+  "description": "Lưu trữ thông tin khách hàng sử dụng ứng dụng Sacombank PAY.",
+  "granularity": "Mỗi dòng là thông tin cá nhân của một khách hàng theo key (customer_cde, username), có ewall_id là surrogate key",
+  "table_type": "dimension table",
+  "key_columns": ["customer_cde", "username", "ewall_id"],
+  "common_dimensions": [
+    "CUSTOMER_CDE",
+    "SUB_BRANCH_CDE",
+    "COMPANY_CDE",
+    "USERNAME",
+    "EWALL_ID"
+  ],
+  "physical_mapping": [
+    {
+      "phys_table": "DW_EWALL_USER_DIM",
+      "priority": 0,
+      "priority_logic": "thông tin khách hàng sử dụng Sacombank PAY, bảng này là SCD type 1, truncate đổ lại mỗi ngày theo ngày process_dt",
+      "filter_condition": ""
+    }
+]
 }
 ]

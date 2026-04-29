@@ -775,63 +775,28 @@
       }
     ]
   },
+
   {
-    "logical_column": "COMPANY_CDE",
+    "logical_column": "ACTIVE",
     "logical_table": "CUSTOMER",
-    "description": "Mã công ty khách hàng thuộc về, company_cde=1 là Việt Nam, company_cde=2 là Campuchia, company_cde=3 là Lào.",
-    "business_terms": ["mã công ty", "company code"],
+    "description": "Trạng thái hoạt động của khách hàng. Active=1 là dòng update mới nhất, Active=0 là dòng lưu lịch sử (SCD Type 2).",
+    "business_terms": ["hoạt động", "kích hoạt"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.ACTIVE",
     "data_type": "string",
     "role": "attribute",
-    "aggregation": false,
-    "is_default_filter": false,
+    "aggregation": "None",
     "physical_mapping": [
       {
         "physical_table": "DW_CUSTOMER_DIM",
-        "physical_column": "COMPANY_CDE"
+        "physical_column": "ACTIVE"
       },
       {
         "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
-        "physical_column": "COMPANY_CDE  "
-      }
-    ]
-  },
-  {
-    "logical_column": "CUSTOMER_CDE",
-    "logical_table": "CUSTOMER",
-    "description": "Mã khách hàng duy nhất trong hệ thống.",
-    "business_terms": ["mã khách hàng", "customer id", "customer code"],
-    "data_type": "string",
-    "role": "attribute",
-    "aggregation": false,
-    "is_default_filter": false,
-    "physical_mapping": [
-      {
-        "physical_table": "DW_CUSTOMER_DIM",
-        "physical_column": "CUSTOMER_CDE"
+        "physical_column": "ACTIVE"
       },
       {
-        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
-        "physical_column": "CUSTOMER_CDE"
-      }
-    ]
-  },
-  {
-    "logical_column": "DAO_CDE",
-    "logical_table": "CUSTOMER",
-    "description": "Mã nhân viên quản lý khách hàng (Relationship Manager).",
-    "business_terms": ["rm", "nhân viên quản lý", "relationship manager"],
-    "data_type": "string",
-    "role": "attribute",
-    "aggregation": false,
-    "is_default_filter": false,
-    "physical_mapping": [
-      {
-        "physical_table": "DW_CUSTOMER_DIM",
-        "physical_column": "DAO_CDE"
-      },
-      {
-        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
-        "physical_column": "DAO_CDE"
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "ACTIVE"
       }
     ]
   },
@@ -840,6 +805,7 @@
     "logical_table": "CUSTOMER",
     "description": "Địa chỉ liên hệ của khách hàng.",
     "business_terms": ["địa chỉ", "address"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.ADDRESS",
     "data_type": "string",
     "role": "attribute",
     "aggregation": false,
@@ -851,15 +817,20 @@
       },
       {
         "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "ADDRESS"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
         "physical_column": "ADDRESS"
       }
     ]
   },
   {
-    "logical_column": "PHONE",
+    "logical_column": "AREA_CDE",
     "logical_table": "CUSTOMER",
-    "description": "Số điện thoại liên hệ của khách hàng.",
-    "business_terms": ["số điện thoại", "phone", "mobile"],
+    "description": "Mã khu vực của khách hàng.",
+    "business_terms": ["khu vực", "area code"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.AREA_CDE",
     "data_type": "string",
     "role": "attribute",
     "aggregation": false,
@@ -867,11 +838,365 @@
     "physical_mapping": [
       {
         "physical_table": "DW_CUSTOMER_DIM",
-        "physical_column": "PHONE"
+        "physical_column": "AREA_CDE"
       },
       {
         "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
-        "physical_column": "PHONE"
+        "physical_column": "AREA_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "AREA_NAME",
+    "logical_table": "CUSTOMER",
+    "description": "Tên khu vực của khách hàng.",
+    "business_terms": ["khu vực", "area name"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.AREA_NAME",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "AREA_NAME"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "AREA_NAME"
+      }
+    ]
+  },
+  {
+    "logical_column": "AUTH_DT",
+    "logical_table": "CUSTOMER",
+    "description": "Ngày duyệt mã khách hàng trên T24, ngày cấp phép khách hàng.",
+    "business_terms": ["ngày cấp phép", "authorization date"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.AUTH_DT",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "AUTH_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "AUTH_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "AUTH_DT"
+      }
+    ]
+  },
+  {
+    "logical_column": "AUTHORISER",
+    "logical_table": "CUSTOMER",
+    "description": "Người duyệt mã khách hàng trên T24, người cấp phép khách hàng.",
+    "business_terms": ["người duyệt", "authorizer"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.AUTHORISER",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "AUTHORISER"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "AUTHORISER"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "AUTHORISER"
+      }
+    ]
+  },
+  {
+    "logical_column": "BANK_CDE",
+    "logical_table": "CUSTOMER",
+    "description": "Mã ngân hàng mà khách hàng thuộc về. Bank_cde='VNI' là Việt Nam, bank_cde='CAM' là Campuchia, bank_cde='LAO' là Lào.",
+    "business_terms": ["mã ngân hàng", "bank code"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.BANK_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "BANK_CDE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "BANK_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "BANK_KEY",
+    "logical_table": "CUSTOMER",
+    "description": "Mã ngân hàng mà khách hàng thuộc về. Bank_key=1 là Việt Nam, bank_key=2 là Campuchia, bank_key=3 là Lào.",
+    "business_terms": ["mã ngân hàng", "bank code"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.BANK_KEY",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "BANK_KEY"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "BANK_KEY"
+      }
+    ]
+  },
+  {
+    "logical_column": "BIRTHDAY",
+    "logical_table": "CUSTOMER",
+    "description": "Ngày sinh của khách hàng.",
+    "business_terms": ["ngày sinh", "birthday"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.BIRTHDAY",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "BIRTHDAY"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "BIRTHDAY"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "BIRTHDAY"
+      }
+    ]
+  },
+  {
+    "logical_column": "BRANCH_CDE",
+    "logical_table": "CUSTOMER",
+    "description": "Mã chi nhánh khách hàng thuộc về. Tra cứu ở DW_ORG_BRANCH_DIM",
+    "business_terms": ["mã chi nhánh", "branch code"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.BRANCH_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "BRANCH_CDE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "BRANCH_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "CLOSE_DT",
+    "logical_table": "CUSTOMER",
+    "description": "Ngày đóng tài khoản của khách hàng.",
+    "business_terms": ["ngày đóng", "close date"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.CLOSE_DT",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "CLOSE_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "CLOSE_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "CLOSE_DT"
+      }
+    ]
+  },
+  {
+    "logical_column": "CREATE_DT",
+    "logical_table": "CUSTOMER",
+    "description": "Ngày tạo tài khoản của khách hàng.",
+    "business_terms": ["ngày tạo", "create date"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.CREATE_DT",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "CREATE_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "CREATE_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "CREATE_DT"
+      }
+    ]
+  },
+  {
+    "logical_column": "COUNTRY",
+    "logical_table": "CUSTOMER",
+    "description": "Quốc gia của khách hàng.",
+    "business_terms": ["quốc gia", "country"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.COUNTRY",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "COUNTRY"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "COUNTRY"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "COUNTRY"
+      }
+    ]
+  },
+  {
+    "logical_column": "CURR_NO",
+    "logical_table": "CUSTOMER",
+    "description": "Phiên bản cập nhật lần thứ mấy của khách hàng. Mỗi lần có sự thay đổi thông tin khách hàng sẽ tạo ra một dòng mới với curr_no tăng lên 1 đơn vị. Dòng có curr_no cao nhất sẽ là dòng thông tin mới nhất của khách hàng.",
+    "business_terms": ["phiên bản", "current version"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.CURR_NO",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "CURR_NO"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "CURR_NO"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "CURR_NO"
+      }
+    ]
+  },
+  {
+    "logical_column": "CUS_OPEN_DT",
+    "logical_table": "CUSTOMER",
+    "description": "Ngày mở tài khoản của khách hàng.",
+    "business_terms": ["ngày mở", "customer open date"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.CUS_OPEN_DT",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "CUS_OPEN_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "CUS_OPEN_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "CUS_OPEN_DT"
+      }
+    ]
+  },
+  {
+    "logical_column": "CUSTOMER_CDE",
+    "logical_table": "CUSTOMER",
+    "description": "Mã khách hàng duy nhất trong hệ thống.",
+    "business_terms": ["mã khách hàng", "customer id", "customer code"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.CUSTOMER_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "CUSTOMER_CDE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "CUSTOMER_CDE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "CUSTOMER_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "CUSTOMER_KEY",
+    "logical_table": "CUSTOMER",
+    "description": "Mã surrogate key khách hàng duy nhất trong hệ thống.",
+    "business_terms": ["mã khách hàng", "customer id", "customer code"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.CUSTOMER_KEY",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "CUSTOMER_KEY"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "CUSTOMER_KEY"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "CUSTOMER_KEY"
+      }
+    ]
+  },
+  {
+    "logical_column": "DAO_CDE",
+    "logical_table": "CUSTOMER",
+    "description": "Mã nhân viên quản lý khách hàng (Relationship Manager).",
+    "business_terms": ["rm", "nhân viên quản lý", "relationship manager"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.DAO_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "DAO_CDE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "DAO_CDE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "DAO_CDE"
       }
     ]
   },
@@ -880,6 +1205,7 @@
     "logical_table": "CUSTOMER",
     "description": "Địa chỉ email của khách hàng.",
     "business_terms": ["email", "mail"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.EMAIL",
     "data_type": "string",
     "role": "attribute",
     "aggregation": false,
@@ -892,26 +1218,335 @@
       {
         "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
         "physical_column": "EMAIL"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "EMAIL"
       }
     ]
   },
   {
-    "logical_column": "ACTIVE",
+    "logical_column": "FULL_NAME",
     "logical_table": "CUSTOMER",
-    "description": "Trạng thái hoạt động của khách hàng (1: đang hoạt động, 0: không hoạt động).",
-    "business_terms": ["trạng thái", "active", "status"],
-    "data_type": "int",
+    "description": "Tên đầy đủ của khách hàng.",
+    "business_terms": ["tên", "tên đầy đủ", "full name"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.FULL_NAME",
+    "data_type": "string",
     "role": "attribute",
     "aggregation": false,
     "is_default_filter": false,
     "physical_mapping": [
       {
         "physical_table": "DW_CUSTOMER_DIM",
-        "physical_column": "ACTIVE"
+        "physical_column": "FULL_NAME"
       },
       {
         "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
-        "physical_column": "ACTIVE"
+        "physical_column": "FULL_NAME"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "FULL_NAME"
+      }
+    ]
+  },
+  {
+    "logical_column": "PHONE",
+    "logical_table": "CUSTOMER",
+    "description": "Số điện thoại liên hệ của khách hàng.",
+    "business_terms": ["số điện thoại", "phone", "mobile"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.PHONE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "PHONE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "PHONE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "PHONE"
+      }
+    ]
+  },
+  {
+    "logical_column": "INPUT_DT",
+    "logical_table": "CUSTOMER",
+    "description": "Ngày dữ liệu được nhập vào hệ thống.",
+    "business_terms": ["ngày nhập", "input date"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.INPUT_DT",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "INPUT_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "INPUT_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "INPUT_DT"
+      }
+    ]
+  },
+  {
+    "logical_column": "INPUTER",
+    "logical_table": "CUSTOMER",
+    "description": "Tên người nhập dữ liệu.",
+    "business_terms": ["người nhập", "inputer", "tên người nhập"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.INPUTER",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "INPUTER"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "INPUTER"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "INPUTER"
+      }
+    ]
+  },
+  {
+    "logical_column": "JOB_TITLE",
+    "logical_table": "CUSTOMER",
+    "description": "Chức vụ của khách hàng.",
+    "business_terms": ["chức vụ", "job title"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.JOB_TITLE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "JOB_TITLE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "JOB_TITLE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "JOB_TITLE"
+      }
+    ]
+  },
+  {
+    "logical_column": "LEGAL_DOC_NAME",
+    "logical_table": "CUSTOMER",
+    "description": "Tên giấy tờ pháp lý của khách hàng.",
+    "business_terms": ["tên giấy tờ", "legal document name"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.LEGAL_DOC_NAME",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "LEGAL_DOC_NAME"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "LEGAL_DOC_NAME"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "LEGAL_DOC_NAME"
+      }
+    ]
+  },
+  {
+    "logical_column": "LEGAL_ID",
+    "logical_table": "CUSTOMER",
+    "description": "Số giấy tờ pháp lý của khách hàng.",
+    "business_terms": ["số giấy tờ", "legal document ID"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.LEGAL_ID",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "LEGAL_ID"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "LEGAL_ID"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "LEGAL_ID"
+      }
+    ]
+  },
+  {
+    "logical_column": "LEGAL_EXP_DT",
+    "logical_table": "CUSTOMER",
+    "description": "Ngày hết hạn giấy tờ pháp lý của khách hàng.",
+    "business_terms": ["ngày hết hạn", "legal document expiry date"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.LEGAL_EXP_DT",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "LEGAL_EXP_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "LEGAL_EXP_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "LEGAL_EXP_DT"
+      }
+    ]
+  },
+  {
+    "logical_column": "LEGAL_ISS_DT",
+    "logical_table": "CUSTOMER",
+    "description": "Ngày cấp giấy tờ pháp lý của khách hàng.",
+    "business_terms": ["ngày cấp", "legal document issue date"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.LEGAL_ISS_DT",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "LEGAL_ISS_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "LEGAL_ISS_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "LEGAL_ISS_DT"
+      }
+    ]
+  },
+  {
+    "logical_column": "LOCAL_REF",
+    "logical_table": "CUSTOMER",
+    "description": "Field LOCAL_REF T24 chứa thông tin khác của khách hàng.",
+    "business_terms": ["tham chiếu", "local reference"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.LOCAL_REF",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "LOCAL_REF"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "LOCAL_REF"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "LOCAL_REF"
+      }
+    ]
+  },
+  {
+    "logical_column": "NATIONALITY",
+    "logical_table": "CUSTOMER",
+    "description": "Quốc tịch của khách hàng.",
+    "business_terms": ["quốc tịch", "nationality"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.NATIONALITY",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "NATIONALITY"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "NATIONALITY"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "NATIONALITY"
+      }
+    ]
+  },
+  {
+    "logical_column": "SECTOR_CDE",
+    "logical_table": "CUSTOMER",
+    "description": "Mã ngành của khách hàng. Tra cứu ở bảng DW_SECTOR_DIM",
+    "business_terms": ["mã ngành", "sector code"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.SECTOR_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "SECTOR_CDE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "SECTOR_CDE"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "SECTOR_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "UPDATE_DT",
+    "logical_table": "CUSTOMER",
+    "description": "Ngày cập nhật thông tin khách hàng.",
+    "business_terms": ["ngày cập nhật", "update date"],
+    "expression": "DW_CUSTOMER_ACTIVE_DIM.UPDATE_DT",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": false,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_CUSTOMER_DIM",
+        "physical_column": "UPDATE_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_ACTIVE_DIM",
+        "physical_column": "UPDATE_DT"
+      },
+      {
+        "physical_table": "DW_CUSTOMER_DIM_RISKDATA",
+        "physical_column": "UPDATE_DT"
       }
     ]
   },
@@ -934,7 +1569,383 @@
         "physical_column": "PROCESS_DT"
       }
     ]
+  },
+  {
+    "logical_column": "ADDRESS",
+    "logical_table": "EWALL USER",
+    "description": "Địa chỉ của khách hàng dùng Sacombank PAY",
+    "business_terms": ["địa chỉ", "address"],
+    "expression": "DW_EWALL_USER_DIM.ADDRESS",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "ADDRESS"
+      }
+    ]
+  },
+  {
+    "logical_column": "INVITE_CDE",
+    "logical_table": "EWALL USER",
+    "description": "Mã mời của khách hàng dùng Sacombank PAY",
+    "business_terms": ["mã mời", "invite code"],
+    "expression": "DW_EWALL_USER_DIM.INVITE_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "INVITE_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "IS_BIOMETRIC",
+    "logical_table": "EWALL USER",
+    "description": "Có thực hiện sinh trắc học, 1 là có, 0 là không",
+    "business_terms": ["sinh trắc học", "biometric"],
+    "expression": "DW_EWALL_USER_DIM.IS_BIOMETRIC",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "IS_BIOMETRIC"
+      }
+    ]
+  },
+  {
+    "logical_column": "BIRTHDAY",
+    "logical_table": "EWALL USER",
+    "description": "Ngày sinh của khách hàng dùng Sacombank PAY",
+    "business_terms": ["ngày sinh", "birthday"],
+    "expression": "DW_EWALL_USER_DIM.BIRTHDAY",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "BIRTHDAY"
+      }
+    ]
+  },
+  {
+    "logical_column": "CUSTOMER_CDE",
+    "logical_table": "EWALL USER",
+    "description": "Mã CIF khách hàng trên T24, tra cứu trong bảng DW_CUSTOMER_DIM để lấy thông tin khách hàng",
+    "business_terms": ["mã khách hàng", "customer code"],
+    "expression": "DW_EWALL_USER_DIM.CUSTOMER_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "CUSTOMER_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "EMAIL",
+    "logical_table": "EWALL USER",
+    "description": "Địa chỉ email của khách hàng dùng Sacombank PAY",
+    "business_terms": ["email", "địa chỉ email"],
+    "expression": "DW_EWALL_USER_DIM.EMAIL",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "EMAIL"
+      }
+    ]
+  },
+  {
+    "logical_column": "EWALL_CUSTOMER_CDE",
+    "logical_table": "EWALL USER",
+    "description": "Mã khách hàng riêng trên hệ thống SACOMBANK PAY, không liên quan đến mã khách hàng trên T24",
+    "business_terms": ["mã khách hàng", "customer code"],
+    "expression": "DW_EWALL_USER_DIM.EWALL_CUSTOMER_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "EWALL_CUSTOMER_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "EWALL_ID",
+    "logical_table": "EWALL USER",
+    "description": "Mã ID ewallet khách hàng trên hệ thống SACOMBANK PAY",
+    "business_terms": ["mã khách hàng", "customer code"],
+    "expression": "DW_EWALL_USER_DIM.EWALL_ID",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "EWALL_ID"
+      }
+    ]
+  },
+  {
+    "logical_column": "EWALL_NAME",
+    "logical_table": "EWALL USER",
+    "description": "Số điện thoại đăng ký Sacombank Pay của khách hàng, cũng là tên hiển thị của khách hàng trên ứng dụng Sacombank PAY",
+    "business_terms": ["tên khách hàng", "customer name"],
+    "expression": "DW_EWALL_USER_DIM.EWALL_NAME",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "EWALL_NAME"
+      }
+    ]
+  },
+  {
+    "logical_column": "FIRST_SIGNED_ON",
+    "logical_table": "EWALL USER",
+    "description": "Ngày kích hoạt dùng lần đầu của khách hàng trên hệ thống SACOMBANK PAY",
+    "business_terms": ["ngày kích hoạt app Pay", "first signed on"],
+    "expression": "DW_EWALL_USER_DIM.FIRST_SIGNED_ON",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "FIRST_SIGNED_ON"
+      }
+    ]
+  },
+  {
+    "logical_column": "FIRST_TRANS_DATE",
+    "logical_table": "EWALL USER",
+    "description": "Ngày giao dịch đầu tiên của khách hàng trên hệ thống SACOMBANK PAY",
+    "business_terms": ["ngày giao dịch đầu tiên", "first transaction date"],
+    "expression": "DW_EWALL_USER_DIM.FIRST_TRANS_DATE",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "FIRST_TRANS_DATE"
+      }
+    ]
+  },
+  {
+    "logical_column": "FULL_NAME",
+    "logical_table": "EWALL USER",
+    "description": "Tên đầy đủ của khách hàng trên hệ thống SACOMBANK PAY",
+    "business_terms": ["tên khách hàng", "full name"],
+    "expression": "DW_EWALL_USER_DIM.FULL_NAME",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "FULL_NAME"
+      }
+    ]
+  },
+  {
+    "logical_column": "GENDER",
+    "logical_table": "EWALL USER",
+    "description": "Giới tính của khách hàng",
+    "business_terms": ["giới tính", "gender"],
+    "expression": "DW_EWALL_USER_DIM.GENDER",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "GENDER"
+      }
+    ]
+  },
+  {
+    "logical_column": "LAST_SIGNED_ON",
+    "logical_table": "EWALL USER",
+    "description": "Ngày đăng nhập cuối cùng của khách hàng trên hệ thống SACOMBANK PAY",
+    "business_terms": ["ngày đăng nhập cuối cùng", "last signed on"],
+    "expression": "DW_EWALL_USER_DIM.LAST_SIGNED_ON",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "LAST_SIGNED_ON"
+      }
+    ]
+  },
+  {
+    "logical_column": "LEGAL_ID",
+    "logical_table": "EWALL USER",
+    "description": "Số định danh cá nhân của khách hàng (CCCD, hộ chiếu,...)",
+    "business_terms": ["số định danh", "legal id"],
+    "expression": "DW_EWALL_USER_DIM.LEGAL_ID",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "LEGAL_ID"
+      }
+    ]
+  },
+  {
+    "logical_column": "SUB_BRANCH_CDE",
+    "logical_table": "EWALL USER",
+    "description": "Mã chi nhánh phụ của khách hàng trên hệ thống SACOMBANK PAY",
+    "business_terms": ["mã chi nhánh", "sub branch code"],
+    "expression": "DW_EWALL_USER_DIM.SUB_BRANCH_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "SUB_BRANCH_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "USER_STATUS",
+    "logical_table": "EWALL USER",
+    "description": "Trạng thái tài khoản của khách hàng trên hệ thống SACOMBANK PAY. A=Active, O=Active, C=Cancelled, P=khóa do sai Password, S=suspended, L=locked",
+    "business_terms": ["trạng thái khách hàng", "user status"],
+    "expression": "DW_EWALL_USER_DIM.USER_STATUS",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "USER_STATUS"
+      }
+    ]
+  },
+  {
+    "logical_column": "NOTE",
+    "logical_table": "EWALL USER",
+    "description": "Thông tin nguồn giới thiệu khách hàng PAY",
+    "business_terms": ["thông tin nguồn giới thiệu"],
+    "expression": "DW_EWALL_USER_DIM.NOTE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "NOTE"
+      }
+    ]
+  },
+  {
+    "logical_column": "INVITED_DT",
+    "logical_table": "EWALL USER",
+    "description": "Ngày khách hàng được mời tham gia hệ thống SACOMBANK PAY",
+    "business_terms": ["ngày được mời", "ngày được giới thiệu","invited date"],
+    "expression": "DW_EWALL_USER_DIM.INVITED_DT",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "INVITED_DT"
+      }
+    ]
+  },
+  {
+    "logical_column": "INVITED_NAME",
+    "logical_table": "EWALL USER",
+    "description": "Tên người mời khách hàng tham gia hệ thống SACOMBANK PAY",
+    "business_terms": ["tên người mời", "invited name"],
+    "expression": "DW_EWALL_USER_DIM.INVITED_NAME",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "INVITED_NAME"
+      }
+    ]
+  },
+  {
+    "logical_column": "INVITED_MOBILE",
+    "logical_table": "EWALL USER",
+    "description": "Số điện thoại của người mời khách hàng tham gia hệ thống SACOMBANK PAY",
+    "business_terms": ["số điện thoại người mời", "invited mobile"],
+    "expression": "DW_EWALL_USER_DIM.INVITED_MOBILE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "INVITED_MOBILE"
+      }
+    ]
+  },
+  {
+    "logical_column": "LAST_TRANS_DT",
+    "logical_table": "EWALL USER",
+    "description": "Ngày giao dịch tài chính cuối cùng của khách hàng. Lấy từ bảng Ewall Transaction",
+    "business_terms": ["ngày giao dịch cuối cùng", "last transaction date"],
+    "expression": "DW_EWALL_USER_DIM.LAST_TRANS_DT",
+    "data_type": "date",
+    "role": "attribute",
+    "aggregation": false,
+    "is_default_filter": true,
+    "physical_mapping": [
+      {
+        "physical_table": "DW_EWALL_USER_DIM",
+        "physical_column": "LAST_TRANS_DT"
+      }
+    ]
   }
-]
 
+
+
+]
 
