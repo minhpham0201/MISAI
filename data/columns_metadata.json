@@ -325,7 +325,7 @@
   {
   "logical_column": "CATEGORY_CDE",
   "logical_table": "DEPOSIT",
-  "description": "Mã loại hợp đồng tiền gửi (CASA, tiền gửi có kỳ hạn, tiền gửi doanh nghiệp...).",
+  "description": "Mã loại hợp đồng tiền gửi (CASA, tiền gửi có kỳ hạn, tiền gửi doanh nghiệp...). Tra cứu ở DW_PRODUCT_CATEGORY_DIM",
   "business_terms": ["mã công ty"],
   "expression": "DWA_DEPOSIT_FCT.COMPANY_CDE)",
   "data_type": "int",
@@ -405,7 +405,7 @@
   {
     "logical_column": "CUS_TARGET_CDE",
     "logical_table": "DEPOSIT",
-    "description": "Mã phân khúc khách hàng",
+    "description": "Mã phân khúc khách hàng. Tra ở DW_CUSTOMER_TARGET_DIM",
     "business_terms": ["phân khúc khách hàng"],
     "expression": "DW_DEPOSIT_FCT.CUS_TARGET_CDE",
     "data_type": "string",
@@ -421,7 +421,7 @@
   {
     "logical_column": "CUSTOMER_CDE",
     "logical_table": "DEPOSIT",
-    "description": "Mã khách hàng duy nhất trong hệ thống.",
+    "description": "Mã khách hàng duy nhất trong hệ thống. Tra ở bảng DW_CUSTOMER_DIM hoặc DW_CUSTOMER_ACTIVE_DIM",
     "business_terms": ["mã khách hàng", "customer id", "khách hàng"],
     "expression": "DWA_DEPOSIT_FCT.CUSTOMER_CDE",
     "data_type": "string",
@@ -461,7 +461,7 @@
   {
     "logical_column": "DAO_CDE",
     "logical_table": "DEPOSIT",
-    "description": "Mã nhân viên quản lý tài khoản khách hàng",
+    "description": "Mã nhân viên quản lý tài khoản khách hàng. Tra cứu ở DW_DAO_DIM",
     "business_terms": ["mã AO khách hàng", "DAO_CDE", "mã nhân viên phụ trách"],
     "expression": "DWA_DEPOSIT_FCT.DAO_CDE",
     "data_type": "string",
@@ -650,11 +650,11 @@
   {
     "logical_column": "PRODUCT_CDE",
     "logical_table": "DEPOSIT",
-    "description": "Mã sản phẩm tiền gửi",
+    "description": "Mã sản phẩm tiền gửi. Tra ở DW_PRODUCT_DIM",
     "business_terms": ["sản phẩm tiền gửi"],
     "expression": "DWA_DEPOSIT_FCT.PRODUCT_CDE",
-    "data_type": "date",
-    "role": "date",
+    "data_type": "string",
+    "role": "attribute",
     "aggregation": "None",
     "physical_mapping": [
       {
@@ -668,13 +668,29 @@
     ]
   },
   {
+    "logical_column": "SBVCODE_LVL_3",
+    "logical_table": "DEPOSIT",
+    "description": "Mã SBVCODE cấp 3, phân loại khách hàng theo mã SBV. Tra ở DW_SBVCODE_DIM",
+    "business_terms": ["SBVCODE"],
+    "expression": "DW_DEPOSIT_FCT.SBVCODE_LVL_3",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "SBVCODE_LVL_3"
+      }
+    ]
+  },
+  {
     "logical_column": "SUB_BRANCH_CDE",
     "logical_table": "DEPOSIT",
-    "description": "Mã phòng giao dịch mở tài khoản",
+    "description": "Mã phòng giao dịch mở tài khoản. Tra ở DW_ORG_LOCATION_DIM",
     "business_terms": ["phòng giao dịch"],
     "expression": "DWA_DEPOSIT_FCT.SUB_BRANCH_CDE",
-    "data_type": "date",
-    "role": "date",
+    "data_type": "string",
+    "role": "attribute",
     "aggregation": "None",
     "physical_mapping": [
       {
@@ -684,6 +700,78 @@
       {
         "physical_table": "DWA_DEPOSIT_FCT",
         "physical_column": "SUB_BRANCH_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "SUB_BRANCH_KEY",
+    "logical_table": "DEPOSIT",
+    "description": "Mã key phòng giao dịch mở tài khoản trong data warehouse",
+    "business_terms": ["phòng giao dịch"],
+    "expression": "DWA_DEPOSIT_FCT.SUB_BRANCH_KEY",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "SUB_BRANCH_KEY"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "SUB_BRANCH_KEY"
+      }
+    ]
+  },
+  {
+    "logical_column": "SUB_INDUSTRY_CDE",
+    "logical_table": "DEPOSIT",
+    "description": "Mã phân ngành kinh tế của khách hàng. Tra cứu ở bảng DW_INDUSTRY_DIM",
+    "business_terms": ["phòng giao dịch"],
+    "expression": "DW_DEPOSIT_FCT.SUB_INDUSTRY_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "SUB_INDUSTRY_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "SUB_SECTOR_CDE",
+    "logical_table": "DEPOSIT",
+    "description": "Mã phân đối tượng khách hàng (cá nhân, doanh nghiệp, hộ kinh doanh). Tra cứu ở bảng DW_SECTOR_DIM",
+    "business_terms": ["phòng giao dịch"],
+    "expression": "DWA_DEPOSIT_FCT.SUB_SECTOR_CDE",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "SUB_SECTOR_CDE"
+      },
+      {
+        "physical_table": "DWA_DEPOSIT_FCT",
+        "physical_column": "SUB_SECTOR_CDE"
+      }
+    ]
+  },
+  {
+    "logical_column": "SUB_TERM_ID",
+    "logical_table": "DEPOSIT",
+    "description": "Mã kỳ hạn của sản phẩm tiền gửi. Tra cứu ở bảng DW_TERM_DIM",
+    "business_terms": ["phòng giao dịch"],
+    "expression": "DW_DEPOSIT_FCT.SUB_TERM_ID",
+    "data_type": "string",
+    "role": "attribute",
+    "aggregation": "None",
+    "physical_mapping": [
+      {
+        "physical_table": "DW_DEPOSIT_FCT",
+        "physical_column": "SUB_TERM_ID"
       }
     ]
   },
