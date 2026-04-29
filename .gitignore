@@ -1,4 +1,4 @@
-﻿app/data/
+﻿data/
 .env
 venv/
 __pycache__/
