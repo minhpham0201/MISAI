@@ -1,5 +1,4 @@
 from langchain_openai import ChatOpenAI
-from langchain_google_genai import ChatGoogleGenerativeAI
 from app.core.config import settings
 
 
@@ -38,6 +37,8 @@ def get_llm(json_mode: bool = None):
 
     # ========= GOOGLE (direct Gemini API) =========
     if provider == "google":
+        from langchain_google_genai import ChatGoogleGenerativeAI
+
         return ChatGoogleGenerativeAI(
             model=settings.GOOGLE_MODEL,
             google_api_key=settings.GOOGLE_API_KEY,

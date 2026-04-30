@@ -11,11 +11,6 @@ def run_test(question: str):
     print("QUESTION:", question)
     print("=" * 60)
 
-    print("TABLES:", result.get("tables"))
-    print("COLUMNS:", result.get("columns"))
-    print("ERROR:", result.get("error"))
-    print("DONE:", result.get("done"))
-
     if "table_metadata" in result:
         print("\nTABLE METADATA:")
         for t in result["table_metadata"]:

@@ -35,6 +35,7 @@ Rules:
 - If user asks about columns without table → ["table_search", "column_search"]
 - If user already specifies table → ["column_search"]
 - If user wants SQL → include "sql_generate" at the end
+- If user question is not related to tables/columns metadata -> ["not related"]
 - Return ONLY JSON
 
 Output:
@@ -44,18 +45,6 @@ Output:
 }
 """
 
-# =========================
-# PROMPT: REWRITE (future use)
-# =========================
-REWRITE_PROMPT = """
-Rewrite the user question into a concise search query for retrieving database schema.
-
-Rules:
-- Keep only important keywords
-- Include business terms if possible
-- Remove filler words
-- Output only text
-"""
 
 # =========================
 # HELPERS
@@ -102,20 +91,9 @@ def call_llm_plan(question: str):
     }
 
 
-# =========================
-# OPTIONAL: REWRITE (future retry)
-# =========================
-def rewrite_query(question: str):
-    res = llm_text.invoke([
-        {"role": "system", "content": REWRITE_PROMPT},
-        {"role": "user", "content": question}
-    ])
-
-    return res.content.strip()
-
-
 ANSWER_PROMPT = """
 You are a data assistant.
+action = "not related" means the question is not related to metadata of tables/columns, so you should not answer and just say "I don't know".
 
 Given:
 - user question
