@@ -1,9 +1,11 @@
 import re
 import unicodedata
+import json
 
 from app.core.llm import get_llm
 
 
+llm_json = get_llm(json_mode=True)
 llm_text = get_llm(json_mode=False)
 
 
@@ -20,22 +22,43 @@ ALLOWED_INTENTS = {
 
 
 ANSWER_PROMPT = """
-You are a data assistant.
+bạn là môt agent giúp trả lời cho người dùng một cách có trọng tâm và dễ hiểu nhất các câu hỏi về metadata của data warehouse
 
-Given:
-- user question
+Input:
+- user input
 - table metadata
 - column metadata
 - tool results
 
-Explain clearly for business users.
+Giải thích dưới góc độ business users.
 
 Rules:
-- Answer in Vietnamese
-- Be concise but informative
-- Mention table name and column name if relevant
-- If tool results are available, use them as the primary source.
-- If no info found, say you don't know
+- Trả lời bằng tiếng Việt
+- Ngắn gọn nhưng đủ thông tin cần thiết
+- Sử dụng thông tin từ table metadata, column metadata, tool results phù hợp để trả lời câu hỏi
+- Nếu không đủ thông tin, hãy trả lời không đủ thông tin để trả lời thay vì đoán bừa
+"""
+
+
+INTENT_CLASSIFY_PROMPT = """
+Bạn là intent router cho trợ lý metadata data warehouse.
+
+Nhiệm vụ:
+- Phân loại câu hỏi người dùng thành một trong 2 intent:
+  1) metadata: hỏi cách tìm/ý nghĩa/vị trí dữ liệu trong hệ thống DWH, bảng, cột, schema, SQL, mapping field business
+  2) out_of_scope: không liên quan metadata DWH
+
+Ví dụ thuộc metadata:
+- "địa chỉ khách hàng nằm ở đâu trong hệ thống"
+- "nên xem bảng nào để lấy số điện thoại"
+- "field nào lưu trạng thái hợp đồng"
+- "cho mình SQL lấy danh sách khách hàng"
+
+Trả về JSON duy nhất:
+{
+  "intent": "metadata",
+  "reason": "short reason"
+}
 """
 
 
@@ -45,9 +68,17 @@ def _normalize_text(text: str):
     return re.sub(r"\s+", " ", text).strip()
 
 
+def _safe_parse_json(text: str):
+    try:
+        return json.loads(text)
+    except Exception:
+        return None
+
+# Cách này sẽ giúp route nhanh theo rule, nếu ko trả ra thì sẽ gọi xuống LLM bên dưới
+# Sẽ bị false negative: nếu user có keyword trùng như rule nhưng thực ra là out of scope
 def _is_metadata_query(question: str):
     q = _normalize_text(question)
-    markers = [
+    explicit_markers = [
         "bang",
         "table",
         "cot",
@@ -59,7 +90,58 @@ def _is_metadata_query(question: str):
         "sql",
         "record",
     ]
-    return any(token in q for token in markers)
+    if any(token in q for token in explicit_markers):
+        return True
+
+    discovery_verbs = [
+        "tim",
+        "kiem",
+        "tra cuu",
+        "coi",
+        "xem",
+        "lay",
+        "co the lay",
+        "o dau",
+        "nam o dau",
+    ]
+    business_entities = [
+        "khach hang",
+        "hop dong",
+        "tai khoan",
+        "giao dich",
+        "du no",
+        "tien gui", "tien vay", "pay"
+    ]
+    system_context = ["he thong", "dwh", "kho du lieu", "warehouse"]
+
+    has_discovery_intent = any(token in q for token in discovery_verbs)
+    has_business_entity = any(token in q for token in business_entities)
+    has_system_context = any(token in q for token in system_context)
+
+    return has_discovery_intent and (has_business_entity or has_system_context)
+
+
+def _route_intent_with_llm(question: str):
+    res = llm_json.invoke(
+        [
+            {"role": "system", "content": INTENT_CLASSIFY_PROMPT},
+            {"role": "user", "content": question},
+        ]
+    )
+    data = _safe_parse_json(res.content)
+    if not data:
+        return None
+
+    intent = data.get("intent")
+    if intent not in ALLOWED_INTENTS:
+        return None
+
+    return {
+        "intent": intent,
+        "actions": _plan_metadata_actions(question) if intent == "metadata" else [],
+        "tables_hint": [],
+        "reason": f"llm: {data.get('reason', '').strip() or 'classified'}",
+    }
 
 
 def _plan_metadata_actions(question: str):
@@ -98,11 +180,15 @@ def route_intent(question: str):
             "reason": "rule: metadata markers detected",
         }
 
+    llm_plan = _route_intent_with_llm(question)
+    if llm_plan:
+        return llm_plan
+
     return {
         "intent": "out_of_scope",
         "actions": [],
         "tables_hint": [],
-        "reason": "rule: non-metadata question",
+        "reason": "fallback: non-metadata question",
     }
 
 

@@ -12,7 +12,7 @@ llm_text = get_llm(json_mode=False)
 
 
 TABLE_AGENT_GOAL = (
-    "Find the most relevant table set for the user's analytics question."
+    "Tìm các tập table set phù hợp để trả lời được câu user query"
 )
 
 

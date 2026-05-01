@@ -1,8 +1,4 @@
-from app.agents.supervisor import (
-    answer_out_of_scope,
-    generate_answer,
-    route_intent,
-)
+from app.agents.supervisor import answer_out_of_scope,generate_answer, route_intent
 from app.tools.graph.flow_logger import log_stage
 
 
