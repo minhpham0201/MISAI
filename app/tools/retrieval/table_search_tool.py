@@ -2,7 +2,7 @@ from app.services.vector_retriever import table_retriever
 from app.services.metadata import TableMetadataStore
 
 
-PATH = r"data\tables_metadata.json"
+PATH = "data/tables_metadata.json"
 table_store = TableMetadataStore(PATH)
 retriever = table_retriever()
 

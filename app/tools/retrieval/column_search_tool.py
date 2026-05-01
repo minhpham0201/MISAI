@@ -2,7 +2,7 @@ from app.services.vector_retriever import column_retriever
 from app.services.metadata import ColumnMetadataStore
 
 
-PATH = r"data\columns_metadata.json"
+PATH = "data/columns_metadata.json"
 column_store = ColumnMetadataStore(PATH)
 retriever = column_retriever()
 
