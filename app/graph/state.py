@@ -1,30 +1,28 @@
-from typing import TypedDict, List, Tuple, Optional
+from typing import List, Optional, Tuple, TypedDict
 
 
 class AgentState(TypedDict, total=False):
-    # input
     question: str
 
-    # planning
+    intent: str
+    metadata_task: str
     actions: List[str]
+    tables_hint: List[str]
     step: int
 
-    # retry
     retry: int
     max_retry: int
 
-    # results
     answer: Optional[str]
     tables: List[str]
     columns: List[Tuple[str, str]]
-
     table_metadata: list
     column_metadata: list
+    tool_results: list
 
-    # control
     next: str
     done: bool
     error: Optional[str]
 
-    # debug
+    router_reason: Optional[str]
     failed_step: Optional[str]

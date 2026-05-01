@@ -1,14 +1,27 @@
+from functools import lru_cache
+from pathlib import Path
+
 from app.services.vector_retriever import table_retriever
 from app.services.metadata import TableMetadataStore
 
 
-PATH = "data/tables_metadata.json"
-table_store = TableMetadataStore(PATH)
-retriever = table_retriever()
+PATH = Path("data") / "tables_metadata.json"
+
+
+@lru_cache(maxsize=1)
+def get_table_store():
+    return TableMetadataStore(PATH)
+
+
+@lru_cache(maxsize=1)
+def get_retriever():
+    return table_retriever()
 
 
 def table_search_tool(state: dict):
     question = state.get("table_query") or state["question"]
+    table_store = get_table_store()
+    retriever = get_retriever()
 
     results = retriever.retrieve(question)
 

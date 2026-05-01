@@ -1,15 +1,28 @@
+from functools import lru_cache
+from pathlib import Path
+
 from app.services.vector_retriever import column_retriever
 from app.services.metadata import ColumnMetadataStore
 
 
-PATH = "data/columns_metadata.json"
-column_store = ColumnMetadataStore(PATH)
-retriever = column_retriever()
+PATH = Path("data") / "columns_metadata.json"
+
+
+@lru_cache(maxsize=1)
+def get_column_store():
+    return ColumnMetadataStore(PATH)
+
+
+@lru_cache(maxsize=1)
+def get_retriever():
+    return column_retriever()
 
 
 def column_search_tool(state: dict):
     question = state.get("column_query") or state["question"]
     tables = state.get("tables", [])
+    column_store = get_column_store()
+    retriever = get_retriever()
 
     results = retriever.retrieve(question)
 

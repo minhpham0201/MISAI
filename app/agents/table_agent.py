@@ -1,5 +1,6 @@
 import json
 from app.core.llm import get_llm
+from app.tools.metadata.count_columns_tool import count_columns_tool
 from app.tools.retrieval.table_search_tool import table_search_tool
 from app.tools.graph.flow_logger import log_stage
 
@@ -143,5 +144,21 @@ def run_table_agent(state: dict):
         attempt += 1
 
     working_state["table_agent_trace"] = trace
+
+    if working_state.get("metadata_task") == "column_count":
+        tables = working_state.get("tables", [])
+        if not tables:
+            tables = working_state.get("tables_hint", [])
+
+        if tables:
+            log_stage("table_agent", working_state, "count_columns.start", f"tables={tables}")
+            result = count_columns_tool(tables)
+            tool_results = list(working_state.get("tool_results", []))
+            tool_results.append(result)
+            working_state["tool_results"] = tool_results
+            log_stage("table_agent", working_state, "count_columns.done", f"result={result}")
+        else:
+            log_stage("table_agent", working_state, "count_columns.skip", "no table found")
+
     log_stage("table_agent", working_state, "finish", f"attempts={len(trace)}")
     return working_state

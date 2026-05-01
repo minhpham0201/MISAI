@@ -1,25 +1,50 @@
-from app.agents.supervisor import call_llm_plan, generate_answer
+from app.agents.supervisor import (
+    answer_out_of_scope,
+    answer_with_llm_knowledge,
+    generate_answer,
+    route_intent,
+)
 from app.tools.graph.flow_logger import log_stage
 
 
 def supervisor_node(state):
     log_stage("supervisor", state, "enter")
 
-    # PLAN (only once)
     if "actions" not in state:
-        log_stage("supervisor", state, "plan.start")
-        plan = call_llm_plan(state["question"])
+        log_stage("supervisor", state, "intent.start")
+        plan = route_intent(state["question"])
 
+        state["intent"] = plan["intent"]
+        state["metadata_task"] = plan["metadata_task"]
         state["actions"] = plan["actions"]
         state["tables_hint"] = plan["tables_hint"]
+        state["router_reason"] = plan["reason"]
         state["step"] = 0
 
-        log_stage("supervisor", state, "plan.done", f"actions={state['actions']}")
+        log_stage(
+            "supervisor",
+            state,
+            "intent.done",
+            f"intent={state['intent']} actions={state['actions']}",
+        )
+
+        if state["intent"] == "general_knowledge":
+            state["answer"] = answer_with_llm_knowledge(state["question"])
+            state["next"] = "__end__"
+            state["done"] = True
+            log_stage("supervisor", state, "general_knowledge.done", "next=__end__")
+            return state
+
+        if state["intent"] == "out_of_scope":
+            state["answer"] = answer_out_of_scope(state["question"])
+            state["next"] = "__end__"
+            state["done"] = True
+            log_stage("supervisor", state, "out_of_scope.done", "next=__end__")
+            return state
 
     actions = state["actions"]
     step = state.get("step", 0)
 
-    # FINISH -> GENERATE ANSWER
     if step >= len(actions):
         log_stage("supervisor", state, "answer.start")
 
@@ -27,6 +52,7 @@ def supervisor_node(state):
             question=state.get("question"),
             tables=state.get("table_metadata", []),
             columns=state.get("column_metadata", []),
+            tool_results=state.get("tool_results", []),
         )
 
         state["answer"] = answer
@@ -35,7 +61,6 @@ def supervisor_node(state):
         log_stage("supervisor", state, "answer.done", "next=__end__")
         return state
 
-    # ROUTE
     state["next"] = actions[step]
     log_stage("supervisor", state, "route", f"next={state['next']}")
     return state
