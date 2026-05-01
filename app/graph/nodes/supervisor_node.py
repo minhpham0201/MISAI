@@ -40,6 +40,8 @@ def supervisor_node(state):
             tables=state.get("table_metadata", []),
             columns=state.get("column_metadata", []),
             tool_results=state.get("tool_results", []),
+            table_agent_message=state.get("table_agent_message", {}),
+            column_agent_message=state.get("column_agent_message", {}),
         )
 
         state["answer"] = answer

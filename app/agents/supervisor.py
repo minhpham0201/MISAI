@@ -22,7 +22,7 @@ ALLOWED_INTENTS = {
 
 
 ANSWER_PROMPT = """
-bạn là môt agent giúp trả lời cho người dùng một cách có trọng tâm và dễ hiểu nhất các câu hỏi về metadata của data warehouse
+bạn là agent trả lời cho người dùng các câu hỏi về metadata của data warehouse
 
 Input:
 - user input
@@ -35,7 +35,11 @@ Giải thích dưới góc độ business users.
 Rules:
 - Trả lời bằng tiếng Việt
 - Ngắn gọn nhưng đủ thông tin cần thiết
-- Sử dụng thông tin từ table metadata, column metadata, tool results phù hợp để trả lời câu hỏi
+- Chỉ dùng thông tin có liên quan trực tiếp đến câu hỏi
+- Không giải thích quy trình nội bộ, không nhắc đến RAG/candidate/ranking/confidence cho người dùng cuối
+- Không liệt kê bảng/cột chỉ để "tham khảo" khi chưa đủ chắc chắn
+- Ưu tiên làm theo nhận định của table agent và column agent về độ chắc chắn kết quả
+- Nếu confidence thấp hoặc có dấu hiệu chưa đủ dữ liệu thì trả lời "chưa đủ thông tin để xác định chính xác"
 - Nếu không đủ thông tin, hãy trả lời không đủ thông tin để trả lời thay vì đoán bừa
 """
 
@@ -192,16 +196,46 @@ def route_intent(question: str):
     }
 
 
-def generate_answer(question, tables, columns, tool_results=None):
+def generate_answer(
+    question,
+    tables,
+    columns,
+    tool_results=None,
+    table_agent_message=None,
+    column_agent_message=None,
+):
+    table_conf = (table_agent_message or {}).get("confidence", "")
+    column_conf = (column_agent_message or {}).get("confidence", "")
+
+    # Chỉ chuyển metadata có độ chắc chắn cao để tránh câu trả lời bị nhiễu.
+    safe_tables = tables if table_conf == "high" else []
+    safe_columns = columns if column_conf == "high" else []
+
+    confidence_gate = {
+        "table_confidence": table_conf or "unknown",
+        "column_confidence": column_conf or "unknown",
+        "tables_used": bool(safe_tables),
+        "columns_used": bool(safe_columns),
+    }
+
     content = f"""
         User question:
         {question}
 
         Tables:
-        {tables}
+        {safe_tables}
 
         Columns:
-        {columns}
+        {safe_columns}
+
+        Table agent message:
+        {table_agent_message or {}}
+
+        Column agent message:
+        {column_agent_message or {}}
+
+        Confidence gate:
+        {confidence_gate}
 
         Tool results:
         {tool_results or []}

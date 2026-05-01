@@ -18,6 +18,8 @@ class AgentState(TypedDict, total=False):
     table_metadata: list
     column_metadata: list
     tool_results: list
+    table_agent_message: dict
+    column_agent_message: dict
 
     next: str
     done: bool

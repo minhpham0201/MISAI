@@ -83,11 +83,17 @@ def _rewrite_column_query(question: str, candidates: list, reason: str):
     return res.content.strip()
 
 
+def _to_debug_json(data: dict):
+    return json.dumps(data, ensure_ascii=False, default=str)
+
+
 def run_column_agent(state: dict):
     max_retry = 2
     attempt = 0
     working_state = {**state}
     trace = []
+    final_judge = None
+    final_candidates = []
 
     while attempt <= max_retry:
         log_stage(
@@ -109,6 +115,8 @@ def run_column_agent(state: dict):
             question=working_state.get("question", ""),
             candidates=candidates,
         )
+        final_judge = judge
+        final_candidates = candidates
         log_stage(
             "column_agent",
             working_state,
@@ -143,5 +151,38 @@ def run_column_agent(state: dict):
         attempt += 1
 
     working_state["column_agent_trace"] = trace
+    confidence = "high" if final_judge and final_judge.get("enough") else "low"
+    working_state["column_agent_message"] = {
+        "confidence": confidence,
+        "reason": (final_judge or {}).get("reason", ""),
+        "query_used": working_state.get("column_query_used"),
+        "selected_columns": working_state.get("columns", []),
+        "selected_candidates": final_candidates,
+        "guidance": (
+            "Ưu tiên dùng selected_columns cho câu trả lời."
+            if confidence == "high"
+            else "Độ chắc chắn thấp, chỉ dùng selected_columns như gợi ý tạm thời và nêu rõ cần xác minh thêm."
+        ),
+    }
+    log_stage(
+        "column_agent",
+        working_state,
+        "confidence.done",
+        f"confidence={confidence} reason={(final_judge or {}).get('reason', '')}",
+    )
+    debug_payload = {
+        "confidence": confidence,
+        "final_judge": final_judge or {},
+        "query_used": working_state.get("column_query_used"),
+        "selected_columns": working_state.get("columns", []),
+        "selected_candidates": final_candidates,
+        "trace": trace,
+    }
+    log_stage(
+        "column_agent",
+        working_state,
+        "debug.snapshot",
+        _to_debug_json(debug_payload),
+    )
     log_stage("column_agent", working_state, "finish", f"attempts={len(trace)}")
     return working_state
