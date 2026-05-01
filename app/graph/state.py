@@ -5,7 +5,6 @@ class AgentState(TypedDict, total=False):
     question: str
 
     intent: str
-    metadata_task: str
     actions: List[str]
     tables_hint: List[str]
     step: int

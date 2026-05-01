@@ -1,4 +1,6 @@
 import json
+import re
+import unicodedata
 from app.core.llm import get_llm
 from app.tools.metadata.count_columns_tool import count_columns_tool
 from app.tools.retrieval.table_search_tool import table_search_tool
@@ -44,6 +46,21 @@ def _safe_parse_json(text: str):
         return json.loads(text)
     except Exception:
         return None
+
+
+def _normalize_text(text: str):
+    text = unicodedata.normalize("NFD", text.lower())
+    text = "".join(ch for ch in text if unicodedata.category(ch) != "Mn")
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _wants_column_count(question: str):
+    q = _normalize_text(question or "")
+    has_table_marker = any(token in q for token in ["bang", "table"])
+    has_count_marker = any(
+        token in q for token in ["bao nhieu cot", "bao nhieu column", "bao nhieu field", "dem so cot"]
+    )
+    return has_table_marker and has_count_marker
 
 
 def _judge_table_candidates(question: str, candidates: list):
@@ -145,7 +162,7 @@ def run_table_agent(state: dict):
 
     working_state["table_agent_trace"] = trace
 
-    if working_state.get("metadata_task") == "column_count":
+    if _wants_column_count(working_state.get("question", "")):
         tables = working_state.get("tables", [])
         if not tables:
             tables = working_state.get("tables_hint", [])

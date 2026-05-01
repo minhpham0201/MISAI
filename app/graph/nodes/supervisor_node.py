@@ -1,6 +1,5 @@
 from app.agents.supervisor import (
     answer_out_of_scope,
-    answer_with_llm_knowledge,
     generate_answer,
     route_intent,
 )
@@ -15,7 +14,6 @@ def supervisor_node(state):
         plan = route_intent(state["question"])
 
         state["intent"] = plan["intent"]
-        state["metadata_task"] = plan["metadata_task"]
         state["actions"] = plan["actions"]
         state["tables_hint"] = plan["tables_hint"]
         state["router_reason"] = plan["reason"]
@@ -27,13 +25,6 @@ def supervisor_node(state):
             "intent.done",
             f"intent={state['intent']} actions={state['actions']}",
         )
-
-        if state["intent"] == "general_knowledge":
-            state["answer"] = answer_with_llm_knowledge(state["question"])
-            state["next"] = "__end__"
-            state["done"] = True
-            log_stage("supervisor", state, "general_knowledge.done", "next=__end__")
-            return state
 
         if state["intent"] == "out_of_scope":
             state["answer"] = answer_out_of_scope(state["question"])
